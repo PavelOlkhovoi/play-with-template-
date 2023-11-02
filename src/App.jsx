@@ -8,10 +8,10 @@ import ReactFlow, {
 } from "reactflow";
 import dagre from "dagre";
 
-import { initialNodes, initialEdges } from "./nodes-edges";
+import { initialNodesData, initialEdgesData } from "./nodes-edges";
 
 import "reactflow/dist/style.css";
-
+console.log("node data", initialNodesData);
 const dagreGraph = new dagre.graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));
 
@@ -51,8 +51,8 @@ const getLayoutedElements = (nodes, edges, direction = "TB") => {
 };
 
 const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
-  initialNodes,
-  initialEdges
+  initialNodesData,
+  initialEdgesData
 );
 
 const LayoutFlow = () => {
