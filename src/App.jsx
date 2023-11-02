@@ -8,7 +8,7 @@ import ReactFlow, {
 } from "reactflow";
 import dagre from "dagre";
 
-import { initialNodes, initialEdges } from "./nodes-edges.js";
+import { initialNodes, initialEdges } from "./nodes-edges";
 
 import "reactflow/dist/style.css";
 
