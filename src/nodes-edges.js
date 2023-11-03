@@ -75,16 +75,28 @@ const addedNodes = new Set();
 export const initialNodesData = [];
 export const initialEdgesData = [];
 const initialObject = "Beyenburg 13 909/0";
-// const secondDarstellung = "Vorgänger";
-const secondDarstellung = "Nachfolger";
+const secondDarstellung = "Vorgänger";
+// const secondDarstellung = "Nachfolger";
 // const secondDarstellung = "All";
+// const firstDarstellung = "Direkte";
+// const firstDarstellung = "Begrenzte";
+// const firstDarstellung = "All";
+const begrenzteTiefe = 1;
 
 historyData.forEach((item, idx) => {
   const { nachfolger_name, vorgaenger_name, level } = item;
-
-  console.log("filter node", level);
-
   if (level < 1 && secondDarstellung === "Nachfolger") {
+    if (historyData.length - 1 === idx && initialNodesData.length === 0) {
+      initialNodesData.push({
+        id: vorgaenger_name.replace(/\s/g, ""),
+        data: {
+          label: initialObject,
+          root: true,
+        },
+        position,
+        // style: { background: "#E1F1FF" },
+      });
+    }
     return;
   }
 
@@ -92,10 +104,21 @@ historyData.forEach((item, idx) => {
     return;
   }
 
+  if (level != 0 && level != 1 && firstDarstellung === "Direkte") {
+    return;
+  }
+
+  if (
+    (level > begrenzteTiefe || level <= -1 * begrenzteTiefe) &&
+    firstDarstellung === "Begrenzte"
+  ) {
+    return;
+  }
+
   const nodeStyle = {};
   if (!addedNodes.has(vorgaenger_name)) {
     if (vorgaenger_name === initialObject) {
-      nodeStyle.background = "#E1F1FF";
+      // nodeStyle.background = "#E1F1FF";
     }
     initialNodesData.push({
       id: vorgaenger_name.replace(/\s/g, ""),
@@ -114,7 +137,7 @@ historyData.forEach((item, idx) => {
       nodeStyle.height = 34;
     }
     if (nachfolger_name === initialObject) {
-      nodeStyle.background = "#E1F1FF";
+      // nodeStyle.background = "#E1F1FF";
     }
     initialNodesData.push({
       id: nachfolger_name.replace(/\s/g, ""),
@@ -140,6 +163,9 @@ historyData.forEach((item, idx) => {
     });
   }
 });
+
+const addStyleToRootNode = initialNodesData.find((n) => n.data.root);
+addStyleToRootNode.style = { background: "#E1F1FF" };
 
 // [
 //   {
