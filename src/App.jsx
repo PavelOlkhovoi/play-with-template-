@@ -63,8 +63,6 @@ const LayoutFlow = () => {
     setSelectedNode(node.id);
   };
 
-  console.log("nodes", nodes);
-
   const onConnect = useCallback(
     (params) =>
       setEdges((eds) =>
