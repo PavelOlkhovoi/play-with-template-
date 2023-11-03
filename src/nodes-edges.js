@@ -165,13 +165,19 @@ const addedNodes = new Set();
 
 export const initialNodesData = [];
 export const initialEdgesData = [];
+const pseudoStyle = {
+  borderRadius: "20px",
+  height: 34,
+};
+
 historyData.forEach((item, idx) => {
   const { nachfolger_name, vorgaenger_name } = item;
   if (!addedNodes.has(vorgaenger_name)) {
     initialNodesData.push({
       id: vorgaenger_name.replace(/\s/g, ""),
       data: {
-        label: vorgaenger_name.startsWith("pseudo ") ? " " : vorgaenger_name,
+        label: vorgaenger_name.startsWith("pseudo ") ? "   " : vorgaenger_name,
+        // style: vorgaenger_name.startsWith("pseudo ") ? pseudoStyle : {},
       },
       position,
     });
@@ -182,10 +188,12 @@ historyData.forEach((item, idx) => {
   if (!addedNodes.has(nachfolger_name)) {
     initialNodesData.push({
       id: nachfolger_name.replace(/\s/g, ""),
+      type: "default",
       data: {
-        label: nachfolger_name.startsWith("pseudo ") ? " " : nachfolger_name,
+        label: nachfolger_name.startsWith("pseudo ") ? "   " : nachfolger_name,
       },
       position,
+      style: nachfolger_name.startsWith("pseudo ") ? pseudoStyle : {},
     });
 
     addedNodes.add(nachfolger_name);
