@@ -63,6 +63,8 @@ const LayoutFlow = () => {
     setSelectedNode(node.id);
   };
 
+  console.log("nodes", nodes);
+
   const onConnect = useCallback(
     (params) =>
       setEdges((eds) =>
@@ -86,13 +88,20 @@ const LayoutFlow = () => {
 
   const selectedNodeStyle = {
     background: "#E1F1FF",
+    height: 36,
+  };
+
+  const rootNodeStyleAfterClick = {
+    background: "#f5f7f7",
   };
 
   const getNodeStyle = (node) => {
     if (node.id === selectedNode) {
       return selectedNodeStyle;
     } else {
-      return node.style;
+      return node.data.root && selectedNode !== null
+        ? rootNodeStyleAfterClick
+        : node.style;
     }
   };
 
