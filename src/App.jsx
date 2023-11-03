@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import ReactFlow, {
   addEdge,
   ConnectionLineType,
@@ -11,7 +11,6 @@ import dagre from "dagre";
 import { initialNodesData, initialEdgesData } from "./nodes-edges";
 
 import "reactflow/dist/style.css";
-console.log("node data", initialNodesData);
 const dagreGraph = new dagre.graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));
 
@@ -58,6 +57,11 @@ const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
 const LayoutFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(layoutedNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(layoutedEdges);
+  const [selectedNode, setSelectedNode] = useState(null);
+  const handleNodeClick = (event, node) => {
+    console.log(`Clicked node with ID: ${node.id}`);
+    setSelectedNode(node.id);
+  };
 
   const onConnect = useCallback(
     (params) =>
@@ -80,12 +84,28 @@ const LayoutFlow = () => {
     [nodes, edges]
   );
 
+  const selectedNodeStyle = {
+    background: "#E1F1FF",
+  };
+
+  const getNodeStyle = (node) => {
+    if (node.id === selectedNode) {
+      return selectedNodeStyle;
+    } else {
+      return node.style;
+    }
+  };
+
   return (
     <ReactFlow
-      nodes={nodes}
+      nodes={nodes.map((node) => ({
+        ...node,
+        style: getNodeStyle(node),
+      }))}
       edges={edges}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
+      onNodeClick={handleNodeClick}
       onConnect={onConnect}
       connectionLineType={ConnectionLineType.SmoothStep}
       fitView
