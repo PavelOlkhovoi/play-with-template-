@@ -159,7 +159,7 @@ historyData.forEach((item, idx) => {
       source: vorgaenger_name.replace(/\s/g, ""),
       target: nachfolger_name.replace(/\s/g, ""),
       type: edgeType,
-      animated: true,
+      animated: false,
     });
   }
 });
