@@ -50,6 +50,20 @@ const getLayoutedElements = (nodes, edges, direction = "TB") => {
   return { nodes, edges };
 };
 
+const addStyleBylickedNode = (node, active) => {
+  if (active) {
+    return {
+      ...node,
+      style: { background: "#E1F1FF" },
+    };
+  } else {
+    return {
+      ...node,
+      style: {},
+    };
+  }
+};
+
 export const LayoutFlow = ({ backgroundColor = "blue", dataIn, extractor }) => {
   const data = extractor(dataIn);
   const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
@@ -59,6 +73,17 @@ export const LayoutFlow = ({ backgroundColor = "blue", dataIn, extractor }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState(layoutedNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(layoutedEdges);
 
+  const handleNodeClick = (event, node) => {
+    console.log("clicked noda", node);
+    const updatedNodeArr = nodes.map((n) => {
+      if (n.id === node.id) {
+        return addStyleBylickedNode(n, true);
+      } else {
+        return addStyleBylickedNode(n, false);
+      }
+    });
+    setNodes(updatedNodeArr);
+  };
   const onConnect = useCallback(
     (params) =>
       setEdges((eds) =>
@@ -94,6 +119,7 @@ export const LayoutFlow = ({ backgroundColor = "blue", dataIn, extractor }) => {
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
+        onNodeClick={handleNodeClick}
         onConnect={onConnect}
         connectionLineType={ConnectionLineType.SmoothStep}
         fitView
