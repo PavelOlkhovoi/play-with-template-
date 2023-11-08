@@ -12,11 +12,6 @@ import dagre from "dagre";
 
 import "reactflow/dist/style.css";
 
-const initialNodes = [
-  { id: "1", position: { x: 0, y: 0 }, data: { label: "1" } },
-  { id: "2", position: { x: 0, y: 100 }, data: { label: "2" } },
-];
-const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
 const dagreGraph = new dagre.graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));
 
@@ -54,11 +49,13 @@ const getLayoutedElements = (nodes, edges, direction = "TB") => {
 
   return { nodes, edges };
 };
-const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
-  initialNodes,
-  initialEdges
-);
-export const LayoutFlow = ({ backgroundColor = "blue" }) => {
+
+export const LayoutFlow = ({ backgroundColor = "blue", dataIn, extractor }) => {
+  const data = extractor(dataIn);
+  const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
+    data.initialNodesData,
+    data.initialEdgesData
+  );
   const [nodes, setNodes, onNodesChange] = useNodesState(layoutedNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(layoutedEdges);
 
@@ -86,7 +83,7 @@ export const LayoutFlow = ({ backgroundColor = "blue" }) => {
   return (
     <div
       style={{
-        width: "800px",
+        width: "1300px",
         height: "800px",
         backgroundColor: backgroundColor,
         padding: "1rem",
@@ -110,28 +107,21 @@ export const LayoutFlow = ({ backgroundColor = "blue" }) => {
     </div>
   );
 };
-
+const dataShape = {
+  alkis_id: PropTypes.string,
+  level: PropTypes.number,
+  nachfolger_alkis_id: PropTypes.string,
+  nachfolger_name: PropTypes.string,
+  nachfolger_schluessel_id: PropTypes.number,
+  schluessel_id: PropTypes.number,
+  vorgaenger_alkis_id: PropTypes.string,
+  vorgaenger_name: PropTypes.string,
+  vorgaenger_schluessel_id: PropTypes.number,
+};
 LayoutFlow.propTypes = {
   backgroundColor: PropTypes.string,
-  //   initialNodes: PropTypes.arrayOf(
-  //     PropTypes.shape({
-  //       id: PropTypes.string,
-  //       position: PropTypes.shape({
-  //         x: PropTypes.number,
-  //         y: PropTypes.number,
-  //       }),
-  //       data: PropTypes.shape({
-  //         label: PropTypes.string,
-  //       }),
-  //     })
-  //   ),
-  //   initialEdges: PropTypes.arrayOf(
-  //     PropTypes.shape({
-  //       id: PropTypes.string,
-  //       source: PropTypes.string,
-  //       target: PropTypes.string,
-  //     })
-  //   ),
+  dataIn: PropTypes.arrayOf(PropTypes.shape(dataShape)),
+  extractor: PropTypes.func,
 };
 
 LayoutFlow.defaultProps = {

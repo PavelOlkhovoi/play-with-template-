@@ -1,10 +1,151 @@
 import { LayoutFlow } from "../components/LayoutFlow";
+import { historyData, historyNodeExtractor } from "../nodes-edges";
 export default {
   component: LayoutFlow,
 };
 
-export const Flow = {
+export const Beyenburg13908 = {
   args: {
     backgroundColor: "white",
+    dataIn: historyData,
+    extractor: historyNodeExtractor,
+  },
+};
+
+export const Beyenburg13927 = {
+  args: {
+    backgroundColor: "white",
+    dataIn: [
+      {
+        alkis_id: "053485-013-00927",
+        level: -1,
+        nachfolger_alkis_id: null,
+        nachfolger_name: "pseudo Schluessel17992",
+        nachfolger_schluessel_id: 17992,
+        schluessel_id: 21838,
+        vorgaenger_alkis_id: "053485-013-00507",
+        vorgaenger_name: "Beyenburg 13 507/0",
+        vorgaenger_schluessel_id: 17988,
+      },
+      {
+        alkis_id: "053485-013-00927",
+        level: -1,
+        nachfolger_alkis_id: null,
+        nachfolger_name: "pseudo Schluessel17992",
+        nachfolger_schluessel_id: 17992,
+        schluessel_id: 21838,
+        vorgaenger_alkis_id: "053485-013-00582",
+        vorgaenger_name: "Beyenburg 13 582/0",
+        vorgaenger_schluessel_id: 17989,
+      },
+      {
+        alkis_id: "053485-013-00927",
+        level: -1,
+        nachfolger_alkis_id: null,
+        nachfolger_name: "pseudo Schluessel17992",
+        nachfolger_schluessel_id: 17992,
+        schluessel_id: 21838,
+        vorgaenger_alkis_id: "053485-013-00583",
+        vorgaenger_name: "Beyenburg 13 583/0",
+        vorgaenger_schluessel_id: 17990,
+      },
+      {
+        alkis_id: "053485-013-00927",
+        level: -1,
+        nachfolger_alkis_id: null,
+        nachfolger_name: "pseudo Schluessel17992",
+        nachfolger_schluessel_id: 17992,
+        schluessel_id: 21838,
+        vorgaenger_alkis_id: "053485-013-00585",
+        vorgaenger_name: "Beyenburg 13 585/0",
+        vorgaenger_schluessel_id: 17991,
+      },
+      {
+        alkis_id: "053485-013-00927",
+        level: -1,
+        nachfolger_alkis_id: "053485-013-00908",
+        nachfolger_name: "Beyenburg 13 908/0",
+        nachfolger_schluessel_id: 17987,
+        schluessel_id: 21838,
+        vorgaenger_alkis_id: "053485-013-00586",
+        vorgaenger_name: "Beyenburg 13 586/0",
+        vorgaenger_schluessel_id: 11685,
+      },
+      {
+        alkis_id: "053485-013-00927",
+        level: -1,
+        nachfolger_alkis_id: "053485-013-00908",
+        nachfolger_name: "Beyenburg 13 908/0",
+        nachfolger_schluessel_id: 17987,
+        schluessel_id: 21838,
+        vorgaenger_alkis_id: "053485-013-00587",
+        vorgaenger_name: "Beyenburg 13 587/0",
+        vorgaenger_schluessel_id: 11686,
+      },
+      {
+        alkis_id: "053485-013-00927",
+        level: -1,
+        nachfolger_alkis_id: "053485-013-00909",
+        nachfolger_name: "Beyenburg 13 909/0",
+        nachfolger_schluessel_id: 17993,
+        schluessel_id: 21838,
+        vorgaenger_alkis_id: null,
+        vorgaenger_name: "pseudo Schluessel17992",
+        vorgaenger_schluessel_id: 17992,
+      },
+      {
+        alkis_id: "053485-013-00927",
+        level: 0,
+        nachfolger_alkis_id: "053485-013-00927",
+        nachfolger_name: "Beyenburg 13 927/0",
+        nachfolger_schluessel_id: 21838,
+        schluessel_id: 21838,
+        vorgaenger_alkis_id: "053485-013-00584",
+        vorgaenger_name: "Beyenburg 13 584/0",
+        vorgaenger_schluessel_id: 11684,
+      },
+      {
+        alkis_id: "053485-013-00927",
+        level: 0,
+        nachfolger_alkis_id: "053485-013-00927",
+        nachfolger_name: "Beyenburg 13 927/0",
+        nachfolger_schluessel_id: 21838,
+        schluessel_id: 21838,
+        vorgaenger_alkis_id: "053485-013-00588",
+        vorgaenger_name: "Beyenburg 13 588/0",
+        vorgaenger_schluessel_id: 11687,
+      },
+      {
+        alkis_id: "053485-013-00927",
+        level: 0,
+        nachfolger_alkis_id: "053485-013-00927",
+        nachfolger_name: "Beyenburg 13 927/0",
+        nachfolger_schluessel_id: 21838,
+        schluessel_id: 21838,
+        vorgaenger_alkis_id: "053485-013-00908",
+        vorgaenger_name: "Beyenburg 13 908/0",
+        vorgaenger_schluessel_id: 17987,
+      },
+      {
+        alkis_id: "053485-013-00927",
+        level: 0,
+        nachfolger_alkis_id: "053485-013-00927",
+        nachfolger_name: "Beyenburg 13 927/0",
+        nachfolger_schluessel_id: 21838,
+        schluessel_id: 21838,
+        vorgaenger_alkis_id: "053485-013-00909",
+        vorgaenger_name: "Beyenburg 13 909/0",
+        vorgaenger_schluessel_id: 17993,
+      },
+    ],
+    extractor: historyNodeExtractor,
+  },
+};
+
+export const Undefined = {
+  args: {
+    backgroundColor: "white",
+    dataIn: undefined,
+    extractor: historyNodeExtractor,
   },
 };
