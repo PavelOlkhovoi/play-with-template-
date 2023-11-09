@@ -64,8 +64,13 @@ const addStyleBylickedNode = (node, active) => {
   }
 };
 
-export const LayoutFlow = ({ backgroundColor = "blue", dataIn, extractor }) => {
-  const data = extractor(dataIn);
+export const LayoutFlow = ({
+  backgroundColor = "blue",
+  dataIn,
+  extractor,
+  rootText,
+}) => {
+  const data = extractor(dataIn, rootText);
   const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
     data.initialNodesData,
     data.initialEdgesData
@@ -109,7 +114,7 @@ export const LayoutFlow = ({ backgroundColor = "blue", dataIn, extractor }) => {
     <div
       style={{
         width: "1300px",
-        height: "800px",
+        height: "650px",
         backgroundColor: backgroundColor,
         padding: "1rem",
       }}
@@ -148,6 +153,7 @@ LayoutFlow.propTypes = {
   backgroundColor: PropTypes.string,
   dataIn: PropTypes.arrayOf(PropTypes.shape(dataShape)),
   extractor: PropTypes.func,
+  rootText: PropTypes.string,
 };
 
 LayoutFlow.defaultProps = {

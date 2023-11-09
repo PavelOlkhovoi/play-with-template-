@@ -161,11 +161,12 @@ export const historyTwoData = [
   },
 ];
 
-export const historyNodeExtractor = (dataIn) => {
+export const historyNodeExtractor = (dataIn, rootText) => {
   if (dataIn === undefined) {
     return { initialNodesData: [], initialEdgesData: [] };
   }
-  const initialNodesData = [];
+  console.log("root text", rootText);
+  const initialNodes = [];
   const initialEdgesData = [];
   const addedNodes = new Set();
 
@@ -173,7 +174,7 @@ export const historyNodeExtractor = (dataIn) => {
     const { nachfolger_name, vorgaenger_name, level } = item;
 
     if (!addedNodes.has(vorgaenger_name)) {
-      initialNodesData.push({
+      initialNodes.push({
         id: vorgaenger_name.replace(/\s/g, ""),
         data: {
           label: vorgaenger_name.startsWith("pseudo ")
@@ -187,7 +188,7 @@ export const historyNodeExtractor = (dataIn) => {
     }
 
     if (!addedNodes.has(nachfolger_name)) {
-      initialNodesData.push({
+      initialNodes.push({
         id: nachfolger_name.replace(/\s/g, ""),
         data: {
           label: nachfolger_name.startsWith("pseudo ")
@@ -210,7 +211,30 @@ export const historyNodeExtractor = (dataIn) => {
       });
     }
   });
-
+  const initialNodesData = initialNodes.map((n) => {
+    let nodeHasSource = false;
+    let nodeHasTarget = false;
+    initialEdgesData.forEach((eg) => {
+      if (eg.source === n.id && nodeHasSource === false) {
+        nodeHasSource = true;
+      }
+      if (eg.target === n.id && nodeHasSource === false) {
+        nodeHasSource = true;
+      }
+    });
+    if (nodeHasSource === true && nodeHasTarget === true) {
+      return {
+        ...n,
+        type: "default",
+      };
+    } else {
+      if (nodeHasSource === true) {
+        return { ...n, type: "input" };
+      } else {
+        return { ...n, type: "output" };
+      }
+    }
+  });
   return { initialNodesData, initialEdgesData };
 };
 

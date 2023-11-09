@@ -9,6 +9,7 @@ export const Beyenburg13908 = {
     backgroundColor: "white",
     dataIn: historyData,
     extractor: historyNodeExtractor,
+    rootText: "Beyenburg 13 908/0",
   },
 };
 
@@ -139,6 +140,7 @@ export const Beyenburg13927 = {
       },
     ],
     extractor: historyNodeExtractor,
+    rootText: "Beyenburg 13 927/0",
   },
 };
 
@@ -147,5 +149,27 @@ export const Undefined = {
     backgroundColor: "white",
     dataIn: undefined,
     extractor: historyNodeExtractor,
+    rootText: "",
+  },
+};
+
+export const Barmen1438 = {
+  args: {
+    backgroundColor: "white",
+    dataIn: [
+      {
+        alkis_id: "053001-001-00438",
+        level: 0,
+        nachfolger_alkis_id: "053001-001-00438",
+        nachfolger_name: "Barmen 1 438/0",
+        nachfolger_schluessel_id: 21754,
+        schluessel_id: 21754,
+        vorgaenger_alkis_id: "053001-001-00098",
+        vorgaenger_name: "Barmen 1 98/0",
+        vorgaenger_schluessel_id: 14549,
+      },
+    ],
+    extractor: historyNodeExtractor,
+    rootText: "Barmen 1 438/0",
   },
 };
