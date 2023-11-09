@@ -211,28 +211,26 @@ export const historyNodeExtractor = (dataIn, rootText) => {
       });
     }
   });
-  const initialNodesData = initialNodes.map((n) => {
-    let nodeHasSource = false;
-    let nodeHasTarget = false;
+  const sourceArr = [];
+  const edArr = [];
+  initialNodes.forEach((n) => {
     initialEdgesData.forEach((eg) => {
-      if (eg.source === n.id && nodeHasSource === false) {
-        nodeHasSource = true;
+      if (eg.source === n.id) {
+        sourceArr.push(n.id);
       }
-      if (eg.target === n.id && nodeHasSource === false) {
-        nodeHasSource = true;
+      if (eg.target === n.id) {
+        edArr.push(n.id);
       }
     });
-    if (nodeHasSource === true && nodeHasTarget === true) {
-      return {
-        ...n,
-        type: "default",
-      };
+  });
+  const initialNodesData = initialNodes.map((n) => {
+    if (sourceArr.includes(n.id) && edArr.includes(n.id)) {
+      return n;
     } else {
-      if (nodeHasSource === true) {
+      if (sourceArr.includes(n.id) && !edArr.includes(n.id)) {
         return { ...n, type: "input" };
-      } else {
-        return { ...n, type: "output" };
       }
+      return { ...n, type: "output" };
     }
   });
   return { initialNodesData, initialEdgesData };
