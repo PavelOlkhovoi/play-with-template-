@@ -1,0 +1,16 @@
+/* .react-flow__handle
+  .react-flow__handle-bottom
+  .nodrag
+  .nopan
+  .source
+  .connectable
+  .connectablestart
+  .connectableend
+  .connectionindicator {
+  background: "red";
+} */
+
+.single-node .react-flow__handle {
+  display: none;
+  background: #4d46cc;
+}

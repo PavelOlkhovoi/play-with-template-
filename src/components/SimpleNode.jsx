@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import ReactFlow from "reactflow";
-
+import "./nodes.css";
 import "reactflow/dist/style.css";
 
 const initialNodes = [
@@ -17,6 +17,7 @@ const initialNodes = [
     position: { x: 100, y: 100 },
     data: { label: "13 586" },
     type: "input",
+    className: "single-node",
   },
   {
     id: "4",
