@@ -1,8 +1,7 @@
 import React, { memo } from "react";
 import { Handle, useReactFlow, useStoreApi, Position } from "reactflow";
-
-const attributs = { name: "ID", schluessel: "text", ID: "1111" };
-
+import { ConsoleSqlOutlined } from "@ant-design/icons";
+const attributs = { name: "ID", ID: "1111", schluessel: "text" };
 function Select({ value, handleId, nodeId }) {
   console.log("xxx data Select value", value);
   console.log("xxx data Select handleId", handleId);
@@ -43,11 +42,17 @@ function Select({ value, handleId, nodeId }) {
 }
 
 function CustomNode({ id, data }) {
+  const iconStyle = { fontSize: "8px" };
   console.log("xxx data", data);
   return (
     <>
-      <div className="custom-node__header">VZKAT_RICHTUNG</div>
-      <div className="custom-node__body">
+      <div className="custom-node__header">
+        <div className="custom-node__header-title">
+          <span className="custom-node__header-title-text">VZKAT_RICHTUNG</span>
+          <ConsoleSqlOutlined style={iconStyle} />
+        </div>
+      </div>
+      {/* <div className="custom-node__body">
         {Object.keys(data.selects).map((handleId) => (
           <Select
             key={handleId}
@@ -56,7 +61,30 @@ function CustomNode({ id, data }) {
             handleId={handleId}
           />
         ))}
-      </div>
+      </div> */}
+      <table>
+        <tr>
+          <td>
+            <strong>name</strong>
+          </td>
+          <td>Text</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            <strong>ID</strong>
+          </td>
+          <td>Text</td>
+          <td>Autoincrement</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>schluessel</strong>
+          </td>
+          <td>Text</td>
+          <td></td>
+        </tr>
+      </table>
     </>
   );
 }
