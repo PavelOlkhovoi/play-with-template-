@@ -30,7 +30,7 @@ function Select({ value, handleId, nodeId }) {
   };
 
   return (
-    <div className="custom-node__select">
+    <div className="custom-node__select" style={{ marginBotton: "0px" }}>
       {Object.keys(attributs).map((item) => (
         <div key={item} className="custom-node__select-item">
           {item}
