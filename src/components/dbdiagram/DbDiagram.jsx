@@ -13,12 +13,14 @@ import {
   edges as initialEdges,
 } from "../../dbdata/InitialElements";
 import CustomNode from "./CustomNode";
+import TextUpdaterNode from "../custom-nodes/TextUpdaterNode";
 
 import "reactflow/dist/style.css";
 import "./overview.css";
 
 const nodeTypes = {
   custom: CustomNode,
+  customText: TextUpdaterNode,
 };
 
 const minimapStyle = {

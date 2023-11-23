@@ -3,7 +3,7 @@ export default {
   component: DbDiagram,
 };
 
-export const TestDiagram = {
+export const ThreeColumnDiagram = {
   args: {
     backgroundColor: "white",
   },

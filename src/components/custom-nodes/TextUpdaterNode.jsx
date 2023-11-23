@@ -11,9 +11,14 @@ function TextUpdaterNode({ data }) {
   return (
     <>
       {/* <Handle type="target" position={Position.Top} /> */}
-      <div style={{ border: "1px solid black" }}>
-        <label htmlFor="text">Text:</label>
-        <input id="text" name="text" onChange={onChange} className="nodrag" />
+      <div>
+        <tr style={{ width: "100%" }}>
+          <td>
+            <strong>name</strong>
+          </td>
+          <td>Text</td>
+          <td></td>
+        </tr>
       </div>
       {/* <Handle type="source" position={Position.Bottom} id="a" /> */}
       {/* <Handle
