@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import { Handle, useReactFlow, useStoreApi, Position } from "reactflow";
 import { ConsoleSqlOutlined } from "@ant-design/icons";
-const attributs = { name: "ID", ID: "1111", schluessel: "text" };
+const attributs = { name: "ID", schluessel: "text", ID: "1111" };
 function Select({ value, handleId, nodeId }) {
   console.log("xxx data Select value", value);
   console.log("xxx data Select handleId", handleId);
@@ -34,9 +34,18 @@ function Select({ value, handleId, nodeId }) {
       {Object.keys(attributs).map((item) => (
         <div key={item} className="custom-node__select-item">
           {item}
+          {item === "ID" && (
+            <div style={{ position: "relative" }}>
+              <Handle
+                type="source"
+                position={Position.Right}
+                id={handleId}
+                style={{ top: -5, right: -12 }}
+              />
+            </div>
+          )}
         </div>
       ))}
-      <Handle type="source" position={Position.Right} id={handleId} />
     </div>
   );
 }
@@ -52,7 +61,7 @@ function CustomNode({ id, data }) {
           <ConsoleSqlOutlined style={iconStyle} />
         </div>
       </div>
-      {/* <div className="custom-node__body">
+      <div className="custom-node__body">
         {Object.keys(data.selects).map((handleId) => (
           <Select
             key={handleId}
@@ -61,8 +70,8 @@ function CustomNode({ id, data }) {
             handleId={handleId}
           />
         ))}
-      </div> */}
-      <table>
+      </div>
+      {/* <table>
         <tr>
           <td>
             <strong>name</strong>
@@ -84,7 +93,7 @@ function CustomNode({ id, data }) {
           <td>Text</td>
           <td></td>
         </tr>
-      </table>
+      </table> */}
     </>
   );
 }

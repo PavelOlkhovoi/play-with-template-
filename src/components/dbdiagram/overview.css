@@ -29,7 +29,8 @@
 }
 
 .custom-node__select-item {
-  margin: 14px 0px;
+  margin: 7px 0px;
+  padding: 0 8px;
 }
 
 .custom-node__header-title {

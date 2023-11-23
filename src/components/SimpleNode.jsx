@@ -27,9 +27,9 @@ const initialNodes = [
   },
 ];
 const initialEdges = [
-  { id: "e1-2", source: "1", target: "2" },
-  { id: "e1-3", source: "3", target: "1" },
-  { id: "e1-4", source: "4", target: "1" },
+  { id: "e1-2", source: "1", target: "2", isConnectableStart: false },
+  { id: "e1-3", source: "3", target: "1", isConnectableStart: false },
+  { id: "e1-4", source: "4", target: "1", isConnectableStart: false },
 ];
 export const SimpleNode = ({ backgroundColor = "blue" }) => {
   return (
@@ -41,7 +41,11 @@ export const SimpleNode = ({ backgroundColor = "blue" }) => {
         padding: "1rem",
       }}
     >
-      <ReactFlow nodes={initialNodes} edges={initialEdges} />
+      <ReactFlow
+        nodes={initialNodes}
+        edges={initialEdges}
+        nodesConnectable={false}
+      />
     </div>
   );
 };
