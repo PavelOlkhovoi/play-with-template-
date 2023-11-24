@@ -30,13 +30,74 @@ const manualNodes = [
     data: vzkat.vzkat_richtung,
   },
 ];
-
 const simpleEdges = [
   {
     id: "e2-3",
     source: "1",
     target: "2",
-    isConnectableStart: false,
+    sourceHandle: "handle-0",
+    targetHandle: "handle-1",
+  },
+];
+
+const manualSchildlNodes = [
+  {
+    id: "1",
+    type: "rightPort",
+    position: { x: 0, y: 200 },
+    data: vzkat.vzkat_schild,
+  },
+  {
+    id: "2",
+    type: "leftPort",
+    position: { x: 350, y: 200 },
+    data: vzkat.vzkat_richtung,
+  },
+];
+const simpleSchildEdges = [
+  {
+    id: "e2-3",
+    source: "1",
+    target: "2",
+    sourceHandle: "handle-0",
+    targetHandle: "handle-1",
+  },
+];
+
+const manualSRZNodes = [
+  {
+    id: "1",
+    type: "rightPort",
+    position: { x: 0, y: 200 },
+    data: vzkat.vzkat_schild,
+  },
+  {
+    id: "2",
+    type: "leftPort",
+    position: { x: 350, y: 200 },
+    data: vzkat.vzkat_richtung,
+  },
+  {
+    id: "3",
+    type: "leftPort",
+    position: { x: 350, y: 400 },
+    data: vzkat.vzkat_zeichen,
+  },
+];
+const simpleSRZEdges = [
+  {
+    id: "e2-3",
+    source: "1",
+    target: "2",
+    sourceHandle: "handle-0A",
+    targetHandle: "handle-2",
+  },
+  {
+    id: "e1-3",
+    source: "1",
+    target: "3",
+    sourceHandle: "handle-0B",
+    targetHandle: "handle-3",
   },
 ];
 
@@ -119,7 +180,7 @@ const PortRighttWhiteBorderless = ({ id, data }) => {
                   <Handle
                     type="source"
                     position={Position.Right}
-                    id={id}
+                    id={"handle-0"}
                     style={{
                       top: 5,
                       right: -12,
@@ -166,9 +227,9 @@ const PortLeftWhiteBorderless = ({ id, data }) => {
                 <div style={{ position: "relative" }}>
                   {item.name}
                   <Handle
-                    type="source"
+                    type="target"
                     position={Position.Left}
-                    id={id}
+                    id={"handle-1"}
                     style={{
                       top: 5,
                       left: -12,
@@ -188,7 +249,7 @@ const PortLeftWhiteBorderless = ({ id, data }) => {
   );
 };
 
-export const FirstCOnnection = () => {
+export const FirstConnection = () => {
   return (
     <div
       style={{
@@ -205,6 +266,239 @@ export const FirstCOnnection = () => {
         nodeTypes={{
           rightPort: PortRighttWhiteBorderless,
           leftPort: PortLeftWhiteBorderless,
+        }}
+      />
+    </div>
+  );
+};
+export const SchildConnection = () => {
+  return (
+    <div
+      style={{
+        width: "1300px",
+        height: "650px",
+        backgroundColor: "white",
+        padding: "1rem",
+      }}
+    >
+      <ReactFlow
+        nodes={manualSchildlNodes}
+        edges={simpleSchildEdges}
+        fitView
+        nodeTypes={{
+          rightPort: PortRighttWhiteBorderless,
+          leftPort: PortLeftWhiteBorderless,
+        }}
+      />
+    </div>
+  );
+};
+
+const SchilSourcedRichtungWithFkConnection = ({ id, data }) => {
+  const iconStyle = { fontSize: "8px" };
+  return (
+    <div style={{ ...reactFLowWrapperCardCss, border: "0" }}>
+      <div style={headerCardCss}>
+        <div style={headerCardTitleCss}>
+          <span style={{ alineText: "left" }}>{data.name}</span>
+          <ConsoleSqlOutlined style={iconStyle} />
+        </div>
+      </div>
+      <div style={{ ...cardBodyGray, background: "white" }}>
+        {Object.keys(data.attributes).map((key, index) => {
+          const item = data.attributes[key];
+          return (
+            <div
+              style={
+                index === 0
+                  ? rowFirstItemClass
+                  : index === Object.keys(data.attributes).length - 1
+                  ? rowLastItemClass
+                  : rowClass
+              }
+              key={index}
+            >
+              {item.name === "fk_richtung" ? (
+                <div style={{ position: "relative" }}>
+                  {item.name}
+                  <Handle
+                    type="source"
+                    position={Position.Right}
+                    id={"handle-0"}
+                    style={{
+                      top: 5,
+                      right: -12,
+                      background: "#494949",
+                      border: "1px solid #e5e7eb",
+                    }}
+                  />
+                </div>
+              ) : (
+                <div>{item.name}</div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+export const SchildFkConnection = () => {
+  return (
+    <div
+      style={{
+        width: "1300px",
+        height: "650px",
+        backgroundColor: "white",
+        padding: "1rem",
+      }}
+    >
+      <ReactFlow
+        nodes={manualSchildlNodes}
+        edges={simpleSchildEdges}
+        fitView
+        nodeTypes={{
+          rightPort: SchilSourcedRichtungWithFkConnection,
+          leftPort: PortLeftWhiteBorderless,
+        }}
+      />
+    </div>
+  );
+};
+
+const SchilSourcedWithTwoNodes = ({ id, data }) => {
+  const iconStyle = { fontSize: "8px" };
+  return (
+    <div style={{ ...reactFLowWrapperCardCss, border: "0" }}>
+      <div style={headerCardCss}>
+        <div style={headerCardTitleCss}>
+          <span style={{ alineText: "left" }}>{data.name}</span>
+          <ConsoleSqlOutlined style={iconStyle} />
+        </div>
+      </div>
+      <div style={{ ...cardBodyGray, background: "white" }}>
+        {Object.keys(data.attributes).map((key, index) => {
+          const item = data.attributes[key];
+          return (
+            <div
+              style={
+                index === 0
+                  ? rowFirstItemClass
+                  : index === Object.keys(data.attributes).length - 1
+                  ? rowLastItemClass
+                  : rowClass
+              }
+              key={index}
+            >
+              {item.name === "fk_richtung" ? (
+                <div style={{ position: "relative" }}>
+                  {item.name}
+                  <Handle
+                    type="source"
+                    position={Position.Right}
+                    id={"handle-0A"}
+                    style={{
+                      top: 5,
+                      right: -12,
+                      background: "#494949",
+                      border: "1px solid #e5e7eb",
+                    }}
+                  />
+                </div>
+              ) : item.name === "fk_zeichen" ? (
+                <div style={{ position: "relative" }}>
+                  {item.name}
+                  <Handle
+                    type="source"
+                    position={Position.Right}
+                    id={"handle-0B"}
+                    style={{
+                      top: 5,
+                      right: -12,
+                      background: "#494949",
+                      border: "1px solid #e5e7eb",
+                    }}
+                  />
+                </div>
+              ) : (
+                <div>{item.name}</div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+const PortLeftHandleWithId = ({ id, data }) => {
+  const iconStyle = { fontSize: "8px" };
+  return (
+    <div style={{ ...reactFLowWrapperCardCss, border: "0" }}>
+      <div style={headerCardCss}>
+        <div style={headerCardTitleCss}>
+          <span style={{ alineText: "left" }}>{data.name}</span>
+          <ConsoleSqlOutlined style={iconStyle} />
+        </div>
+      </div>
+      <div style={{ ...cardBodyGray, background: "white" }}>
+        {Object.keys(data.attributes).map((key, index) => {
+          const item = data.attributes[key];
+          return (
+            <div
+              style={
+                index === 0
+                  ? rowFirstItemClass
+                  : index === Object.keys(data.attributes).length - 1
+                  ? rowLastItemClass
+                  : rowClass
+              }
+              key={index}
+            >
+              {item.name === "id" ? (
+                <div style={{ position: "relative" }}>
+                  {item.name}
+                  <Handle
+                    type="target"
+                    position={Position.Left}
+                    id={`handle-${id}`}
+                    style={{
+                      top: 5,
+                      left: -12,
+                      background: "#494949",
+                      border: "1px solid #e5e7eb",
+                    }}
+                  />
+                </div>
+              ) : (
+                <div>{item.name}</div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+export const SRZConnection = () => {
+  return (
+    <div
+      style={{
+        width: "1300px",
+        height: "650px",
+        backgroundColor: "white",
+        padding: "1rem",
+      }}
+    >
+      <ReactFlow
+        nodes={manualSRZNodes}
+        edges={simpleSRZEdges}
+        fitView
+        nodeTypes={{
+          rightPort: SchilSourcedWithTwoNodes,
+          leftPort: PortLeftHandleWithId,
         }}
       />
     </div>

@@ -13,13 +13,17 @@ export const nodes = [
       },
     },
   },
-  // {
-  //   id: "node-1",
-  //   type: "customText",
-  //   position: { x: 0, y: 30 },
-  //   data: { value: 123 },
-  //   parentNode: "4",
-  // },
+  {
+    id: "5",
+    type: "custom",
+    position: { x: 400, y: 200 },
+    data: {
+      selects: {
+        "handle-0": "smoothstep",
+        // "handle-1": "smoothstep",
+      },
+    },
+  },
   // {
   //   id: "5",
   //   type: "output",
