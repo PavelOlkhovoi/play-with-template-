@@ -101,6 +101,43 @@ const simpleSRZEdges = [
   },
 ];
 
+const manualSRZNodesWithRealId = [
+  {
+    id: "vzkat_schild",
+    type: "rightPort",
+    position: { x: 0, y: 200 },
+    data: vzkat.vzkat_schild,
+  },
+  {
+    id: "vzkat_richtung",
+    type: "leftPort",
+    position: { x: 350, y: 200 },
+    data: vzkat.vzkat_richtung,
+  },
+  {
+    id: "vzkat_zeichen",
+    type: "leftPort",
+    position: { x: 350, y: 400 },
+    data: vzkat.vzkat_zeichen,
+  },
+];
+const simpleSRZEdgesWithRealId = [
+  {
+    id: "e2-3",
+    source: "vzkat_schild",
+    target: "vzkat_richtung",
+    sourceHandle: "handle-source-vzkat_richtung",
+    targetHandle: "handle-vzkat_richtung",
+  },
+  {
+    id: "e1-3",
+    source: "vzkat_schild",
+    target: "vzkat_zeichen",
+    sourceHandle: "handle-source-vzkat_zeichen",
+    targetHandle: "handle-vzkat_zeichen",
+  },
+];
+
 const reactFLowWrapperCardCss = {
   fontFamily: '"Helvetica", sans-serif',
   fontSize: "9px",
@@ -482,6 +519,71 @@ const PortLeftHandleWithId = ({ id, data }) => {
   );
 };
 
+const SchilSourcedWithIdNodes = ({ id, data }) => {
+  const iconStyle = { fontSize: "8px" };
+  return (
+    <div style={{ ...reactFLowWrapperCardCss, border: "0" }}>
+      <div style={headerCardCss}>
+        <div style={headerCardTitleCss}>
+          <span style={{ alineText: "left" }}>{data.name}</span>
+          <ConsoleSqlOutlined style={iconStyle} />
+        </div>
+      </div>
+      <div style={{ ...cardBodyGray, background: "white" }}>
+        {Object.keys(data.attributes).map((key, index) => {
+          const item = data.attributes[key];
+          return (
+            <div
+              style={
+                index === 0
+                  ? rowFirstItemClass
+                  : index === Object.keys(data.attributes).length - 1
+                  ? rowLastItemClass
+                  : rowClass
+              }
+              key={index}
+            >
+              {item.name === "fk_richtung" ? (
+                <div style={{ position: "relative" }}>
+                  {item.name}
+                  <Handle
+                    type="source"
+                    position={Position.Right}
+                    id={"handle-source-vzkat_richtung"}
+                    style={{
+                      top: 5,
+                      right: -12,
+                      background: "#494949",
+                      border: "1px solid #e5e7eb",
+                    }}
+                  />
+                </div>
+              ) : item.name === "fk_zeichen" ? (
+                <div style={{ position: "relative" }}>
+                  {item.name}
+                  <Handle
+                    type="source"
+                    position={Position.Right}
+                    id={"handle-source-vzkat_zeichen"}
+                    style={{
+                      top: 5,
+                      right: -12,
+                      background: "#494949",
+                      border: "1px solid #e5e7eb",
+                    }}
+                  />
+                </div>
+              ) : (
+                <div>{item.name}</div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
 export const SRZConnection = () => {
   return (
     <div
@@ -499,6 +601,128 @@ export const SRZConnection = () => {
         nodeTypes={{
           rightPort: SchilSourcedWithTwoNodes,
           leftPort: PortLeftHandleWithId,
+        }}
+      />
+    </div>
+  );
+};
+export const SRZRealIdConnection = () => {
+  return (
+    <div
+      style={{
+        width: "1300px",
+        height: "650px",
+        backgroundColor: "white",
+        padding: "1rem",
+      }}
+    >
+      <ReactFlow
+        nodes={manualSRZNodesWithRealId}
+        edges={simpleSRZEdgesWithRealId}
+        fitView
+        nodeTypes={{
+          rightPort: SchilSourcedWithIdNodes,
+          leftPort: PortLeftHandleWithId,
+        }}
+      />
+    </div>
+  );
+};
+
+const DetectPortAutomatic = ({ id, data }) => {
+  const iconStyle = { fontSize: "8px" };
+  return (
+    <div style={{ ...reactFLowWrapperCardCss, border: "0" }}>
+      <div style={headerCardCss}>
+        <div style={headerCardTitleCss}>
+          <span style={{ alineText: "left" }}>{data.name}</span>
+          <ConsoleSqlOutlined style={iconStyle} />
+        </div>
+      </div>
+      <div style={{ ...cardBodyGray, background: "white" }}>
+        {Object.keys(data.attributes).map((key, index) => {
+          const item = data.attributes[key];
+          return (
+            <div
+              style={
+                index === 0
+                  ? rowFirstItemClass
+                  : index === Object.keys(data.attributes).length - 1
+                  ? rowLastItemClass
+                  : rowClass
+              }
+              key={index}
+            >
+              {buildRowWithPorts(item.name, id)}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+function buildRowWithPorts(rowName, id) {
+  if (rowName.startsWith("fk")) {
+    const correctName = rowName.split("_")[1];
+    console.log("xxx build fk id", `handle-source-vzkat_${correctName}`);
+    return (
+      <div style={{ position: "relative" }}>
+        {rowName}
+        <Handle
+          type="source"
+          position={Position.Right}
+          id={`handle-source-vzkat_${correctName}`}
+          style={{
+            top: 5,
+            right: -12,
+            background: "#494949",
+            border: "1px solid #e5e7eb",
+          }}
+        />
+      </div>
+    );
+  } else if (rowName === "id") {
+    console.log("xxx build id", `handle-${id}`);
+
+    return (
+      <div style={{ position: "relative" }}>
+        {rowName}
+        <Handle
+          type="target"
+          position={Position.Left}
+          id={`handle-${id}`}
+          style={{
+            top: 5,
+            left: -12,
+            background: "#494949",
+            border: "1px solid #e5e7eb",
+          }}
+        />
+      </div>
+    );
+  } else {
+    return <div>{rowName}</div>;
+  }
+}
+
+export const SRZBuildPortConnection = () => {
+  return (
+    <div
+      style={{
+        width: "1300px",
+        height: "650px",
+        backgroundColor: "white",
+        padding: "1rem",
+      }}
+    >
+      <ReactFlow
+        nodes={manualSRZNodesWithRealId}
+        edges={simpleSRZEdgesWithRealId}
+        fitView
+        nodeTypes={{
+          rightPort: DetectPortAutomatic,
+          leftPort: DetectPortAutomatic,
         }}
       />
     </div>
