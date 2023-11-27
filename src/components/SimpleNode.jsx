@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import PropTypes from "prop-types";
-import ReactFlow from "reactflow";
+import ReactFlow, { applyEdgeChanges, applyNodeChanges } from "reactflow";
 import "./nodes.css";
 import "reactflow/dist/style.css";
 
@@ -32,6 +32,18 @@ const initialEdges = [
   { id: "e1-4", source: "4", target: "1", isConnectableStart: false },
 ];
 export const SimpleNode = ({ backgroundColor = "blue" }) => {
+  const [nodes, setNodes] = useState(initialNodes);
+  const [edges, setEdges] = useState(initialEdges);
+
+  const onNodesChange = useCallback(
+    (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
+    [setNodes]
+  );
+  const onEdgesChange = useCallback(
+    (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
+    [setEdges]
+  );
+
   return (
     <div
       style={{
@@ -42,9 +54,11 @@ export const SimpleNode = ({ backgroundColor = "blue" }) => {
       }}
     >
       <ReactFlow
-        nodes={initialNodes}
-        edges={initialEdges}
-        nodesConnectable={false}
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        // nodesConnectable={false}
       />
     </div>
   );

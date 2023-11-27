@@ -1,14 +1,17 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import ReactFlow, {
   addEdge,
   Background,
+  ConnectionLineType,
   useNodesState,
   useEdgesState,
   MarkerType,
   Handle,
   Position,
+  applyEdgeChanges,
+  applyNodeChanges,
 } from "reactflow";
-
+import dagre from "dagre";
 import "reactflow/dist/style.css";
 import { ConsoleSqlOutlined, CodeOutlined } from "@ant-design/icons";
 import { vzkat } from "./data";
@@ -662,10 +665,143 @@ const DetectPortAutomatic = ({ id, data }) => {
   );
 };
 
+function buildRowWithPortsCids(rowName, id) {
+  if (rowName.name.startsWith("fk")) {
+    const correctName = rowName.name.split("_")[1];
+    return (
+      <div style={{ position: "relative" }}>
+        {rowName.name}
+        <Handle
+          type="source"
+          position={Position.Right}
+          id={`handle-source-${rowName.cidsType}`}
+          style={{
+            top: 5,
+            right: -12,
+            background: "#494949",
+            border: "1px solid #e5e7eb",
+          }}
+        />
+      </div>
+    );
+  } else if (rowName.name === "id") {
+    return (
+      <div style={{ position: "relative" }}>
+        {rowName.name}
+        <Handle
+          type="target"
+          position={Position.Left}
+          id={`handle-${id}`}
+          style={{
+            top: 5,
+            left: -12,
+            background: "#494949",
+            border: "1px solid #e5e7eb",
+          }}
+        />
+      </div>
+    );
+  } else {
+    return <div>{rowName.name}</div>;
+  }
+}
+
+function buildNodeAndEdgeCids(dbarr, mainDbName) {
+  const customNodes = [];
+  const customEdges = [];
+
+  dbarr.forEach((item) => {
+    const { name, attributes } = item;
+    const node = {
+      id: name,
+      type: name === mainDbName ? "rightPort" : "leftPort",
+      position: { x: 0, y: 0 },
+      data: item,
+    };
+
+    customNodes.push(node);
+
+    const atrArr = Object.keys(attributes);
+    const portsNameArr = atrArr.filter(
+      (idx) => idx.startsWith("fk") || idx === "id"
+    );
+    const getCidsName = portsNameArr.map((atr) => {
+      return atr !== "id" ? attributes[atr].cidsType : "id";
+    });
+
+    getCidsName.forEach((item, idx) => {
+      console.log("ccc buildNodeAndEdgeCids item", item);
+      console.log("ccc buildNodeAndEdgeCids name", name);
+
+      if (item.startsWith("fk")) {
+        const correctName = item.split("_")[1];
+        const edge = {
+          id: `e${name}${idx}`,
+          source: name,
+          target: item,
+          sourceHandle: `handle-source-${item}`,
+          targetHandle: `handle-${item}`,
+        };
+
+        customEdges.push(edge);
+      } else {
+        const edge = {
+          id: `e${name}!!!${idx}`,
+          source: findNodeSourceCids(dbarr, name, item),
+          // source: findNodeSource(dbarr, name),
+          target: name,
+          sourceHandle: `handle-source-${name}`,
+          targetHandle: `handle-${item}`,
+        };
+
+        customEdges.push(edge);
+      }
+    });
+  });
+
+  console.log("ccc cids", customNodes, customEdges);
+
+  return { customNodes, customEdges };
+}
+
+const DetectPortAutomatiCids = ({ id, data }) => {
+  const iconStyle = { fontSize: "8px" };
+  return (
+    <div style={{ ...reactFLowWrapperCardCss, border: "0" }}>
+      <div style={headerCardCss}>
+        <div style={headerCardTitleCss}>
+          <span style={{ alineText: "left" }}>{data.name}</span>
+          <ConsoleSqlOutlined style={iconStyle} />
+        </div>
+      </div>
+      <div style={{ ...cardBodyGray, background: "white" }}>
+        {Object.keys(data.attributes).map((key, index) => {
+          const item = data.attributes[key];
+          return (
+            <div
+              style={
+                index === 0
+                  ? rowFirstItemClass
+                  : index === Object.keys(data.attributes).length - 1
+                  ? rowLastItemClass
+                  : rowClass
+              }
+              key={index}
+            >
+              {/* {buildRowWithPorts(item.name, id)} */}
+              {buildRowWithPortsCids(item, id)}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
 function buildRowWithPorts(rowName, id) {
   if (rowName.startsWith("fk")) {
     const correctName = rowName.split("_")[1];
-    console.log("xxx build fk id", `handle-source-vzkat_${correctName}`);
+    console.log("xxx build fk id", rowName);
     return (
       <div style={{ position: "relative" }}>
         {rowName}
@@ -683,8 +819,6 @@ function buildRowWithPorts(rowName, id) {
       </div>
     );
   } else if (rowName === "id") {
-    console.log("xxx build id", `handle-${id}`);
-
     return (
       <div style={{ position: "relative" }}>
         {rowName}
@@ -723,6 +857,388 @@ export const SRZBuildPortConnection = () => {
         nodeTypes={{
           rightPort: DetectPortAutomatic,
           leftPort: DetectPortAutomatic,
+        }}
+      />
+    </div>
+  );
+};
+
+function buildNodeAndEdge(dbarr) {
+  const customNodes = [];
+  const customEdges = [];
+  dbarr.forEach((item) => {
+    const { name, attributes } = item;
+    console.log("ddd node attributes", attributes);
+    console.log("ddd node name", name);
+    const node = {
+      id: name,
+      type: name === "vzkat_schild" ? "rightPort" : "leftPort",
+      position:
+        name === "vzkat_schild"
+          ? { x: 0, y: 200 }
+          : name === "vzkat_richtung"
+          ? { x: 350, y: 200 }
+          : { x: 350, y: 30 },
+      data: item,
+    };
+
+    customNodes.push(node);
+
+    const atrArr = Object.keys(attributes);
+    const portsNameArr = atrArr.filter(
+      (idx) => idx.startsWith("fk") || idx === "id"
+    );
+    portsNameArr.forEach((item, idx) => {
+      if (item.startsWith("fk")) {
+        const correctName = item.split("_")[1];
+        const edge = {
+          id: `e${name}${idx}`,
+          source: name,
+          target: `vzkat_${correctName}`,
+          sourceHandle: `handle-source-vzkat_${correctName}`,
+          targetHandle: `handle-vzkat_${correctName}`,
+        };
+
+        customEdges.push(edge);
+      } else {
+        const edge = {
+          id: `e${name}!!!${idx}`,
+          source: findNodeSource(dbarr, name),
+          target: name,
+          sourceHandle: `handle-source-${name}`,
+          targetHandle: `handle-${name}`,
+        };
+
+        customEdges.push(edge);
+      }
+    });
+  });
+
+  return { customNodes, customEdges };
+}
+
+function findNodeSource(dbarr, targetName) {
+  const clearName = targetName.split("_")[1];
+  const fkName = `fk_${clearName}`;
+  let sourseName;
+  dbarr.forEach((node) => {
+    const { name, attributes } = node;
+    console.log("ttt debug find func", attributes);
+    const atrObj = Object.keys(attributes);
+    if (atrObj.includes(fkName)) {
+      sourseName = name;
+    }
+  });
+  return sourseName ? sourseName : targetName;
+}
+function findNodeSourceCids(dbarr, targetName, typeCids) {
+  console.log("ccc findNodeSourceCids", dbarr, targetName, typeCids);
+  const clearName = targetName.split("_")[1];
+  const fkName = `fk_${clearName}`;
+  let sourseName;
+  dbarr.forEach((node) => {
+    const { name, attributes } = node;
+    const atrObj = Object.keys(attributes);
+    atrObj.forEach((item) => {
+      if (attributes[item].cidsType === typeCids) {
+        // console.log("ccc xxx", attributes[item].name);
+        console.log("ccc xxx", node);
+        sourseName = node.name;
+      }
+    });
+  });
+  return sourseName ? sourseName : targetName;
+}
+
+const { customNodes, customEdges } = buildNodeAndEdge([
+  vzkat.vzkat_schild,
+  vzkat.vzkat_richtung,
+  vzkat.vzkat_zeichen,
+]);
+
+export const SRZBuildNodesEdgaseConnection = () => {
+  const [nodes, setNodes] = useState(customNodes);
+  const [edges, setEdges] = useState(customEdges);
+
+  const onNodesChange = useCallback(
+    (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
+    [setNodes]
+  );
+  const onEdgesChange = useCallback(
+    (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
+    [setEdges]
+  );
+  return (
+    <div
+      style={{
+        width: "1300px",
+        height: "650px",
+        backgroundColor: "white",
+        padding: "1rem",
+      }}
+    >
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        fitView
+        nodeTypes={{
+          rightPort: DetectPortAutomatic,
+          leftPort: DetectPortAutomatic,
+        }}
+      />
+    </div>
+  );
+};
+
+const DetectPortAutomaticWithoutPosition = ({ id, data }) => {
+  const iconStyle = { fontSize: "8px" };
+  return (
+    <div style={{ ...reactFLowWrapperCardCss, border: "0" }}>
+      <div style={headerCardCss}>
+        <div style={headerCardTitleCss}>
+          <span style={{ alineText: "left" }}>{data.name}</span>
+          <ConsoleSqlOutlined style={iconStyle} />
+        </div>
+      </div>
+      <div style={{ ...cardBodyGray, background: "white" }}>
+        {Object.keys(data.attributes).map((key, index) => {
+          const item = data.attributes[key];
+          return (
+            <div
+              style={
+                index === 0
+                  ? rowFirstItemClass
+                  : index === Object.keys(data.attributes).length - 1
+                  ? rowLastItemClass
+                  : rowClass
+              }
+              key={index}
+            >
+              {buildRowWithPorts(item.name, id)}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+function buildNodeAndEdgeWithoutPosition(dbarr, mainDbName) {
+  const customNodes = [];
+  const customEdges = [];
+  dbarr.forEach((item) => {
+    const { name, attributes } = item;
+    const node = {
+      id: name,
+      type: name === mainDbName ? "rightPort" : "leftPort",
+      position: { x: 0, y: 0 },
+      data: item,
+    };
+
+    customNodes.push(node);
+
+    const atrArr = Object.keys(attributes);
+    const portsNameArr = atrArr.filter(
+      (idx) => idx.startsWith("fk") || idx === "id"
+    );
+    const getCidsName = portsNameArr.map((atr) => {
+      return atr !== "id" ? attributes[atr].cidsType : "id";
+    });
+    getCidsName.forEach((item, idx) => {
+      if (item.startsWith("fk")) {
+        const correctName = item.split("_")[1];
+        const edge = {
+          id: `e${name}${idx}`,
+          source: name,
+          // target: `vzkat_${correctName}`,
+          target: item,
+          sourceHandle: `handle-source-vzkat_${correctName}`,
+          targetHandle: `handle-vzkat_${correctName}`,
+        };
+
+        customEdges.push(edge);
+      } else {
+        const edge = {
+          id: `e${name}!!!${idx}`,
+          source: findNodeSource(dbarr, name),
+          target: name,
+          sourceHandle: `handle-source-${name}`,
+          targetHandle: `handle-${name}`,
+        };
+
+        customEdges.push(edge);
+      }
+    });
+  });
+
+  // console.log("xxx cids !!!", customNodes, customEdges);
+
+  return { customNodes, customEdges };
+}
+
+const { customNodes: srzsNode, customEdges: srzsEdges } =
+  buildNodeAndEdgeWithoutPosition(
+    [
+      vzkat.vzkat_schild,
+      vzkat.vzkat_richtung,
+      vzkat.vzkat_zeichen,
+      vzkat.vzkat_standort,
+      vzkat.vzkat_stvo,
+    ],
+    "vzkat_schild"
+  );
+
+export const SRZBuildWithoutPositionConnection = () => {
+  const [nodes, setNodes] = useState(srzsNode);
+  const [edges, setEdges] = useState(srzsEdges);
+  const onNodesChange = useCallback(
+    (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
+    [setNodes]
+  );
+  const onEdgesChange = useCallback(
+    (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
+    [setEdges]
+  );
+  return (
+    <div
+      style={{
+        width: "1300px",
+        height: "650px",
+        backgroundColor: "white",
+        padding: "1rem",
+      }}
+    >
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        fitView
+        nodeTypes={{
+          rightPort: DetectPortAutomatic,
+          leftPort: DetectPortAutomatic,
+        }}
+      />
+    </div>
+  );
+};
+
+const dagreGraph = new dagre.graphlib.Graph();
+dagreGraph.setDefaultEdgeLabel(() => ({}));
+const nodeWidth = 200;
+const nodeHeight = 300;
+const getLayoutedElements = (nodes, edges, direction = "LR") => {
+  const isHorizontal = direction === "LR";
+  dagreGraph.setGraph({ rankdir: direction });
+
+  nodes.forEach((node) => {
+    dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight });
+  });
+
+  edges.forEach((edge) => {
+    dagreGraph.setEdge(edge.source, edge.target);
+  });
+
+  dagre.layout(dagreGraph);
+
+  nodes.forEach((node) => {
+    const nodeWithPosition = dagreGraph.node(node.id);
+    node.targetPosition = isHorizontal ? "left" : "top";
+    node.sourcePosition = isHorizontal ? "right" : "bottom";
+
+    // We are shifting the dagre node position (anchor=center center) to the top left
+    // so it matches the React Flow node anchor point (top left).
+    node.position = {
+      x: nodeWithPosition.x - nodeWidth / 2,
+      y: nodeWithPosition.y - nodeHeight / 2,
+    };
+
+    return node;
+  });
+
+  return { nodes, edges };
+};
+
+const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
+  srzsNode,
+  srzsEdges
+);
+
+export const SRZBuildWithoutPositionDagre = () => {
+  const [nodes, setNodes] = useState(layoutedNodes);
+  const [edges, setEdges] = useState(layoutedEdges);
+  console.log("xxx cids !!!", edges);
+
+  // const onNodesChange = useCallback(
+  //   (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
+  //   [setNodes]
+  // );
+  // const onEdgesChange = useCallback(
+  //   (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
+  //   [setEdges]
+  // );
+  return (
+    <div
+      style={{
+        width: "1300px",
+        height: "650px",
+        backgroundColor: "white",
+        padding: "1rem",
+      }}
+    >
+      <ReactFlow
+        nodes={srzsNode}
+        edges={srzsEdges}
+        // onNodesChange={onNodesChange}
+        // onEdgesChange={onEdgesChange}
+        fitView
+        nodeTypes={{
+          rightPort: DetectPortAutomatic,
+          leftPort: DetectPortAutomatic,
+        }}
+      />
+    </div>
+  );
+};
+
+const { customNodes: srzsaNode, customEdges: srzsaEdges } =
+  buildNodeAndEdgeCids(
+    [
+      vzkat.vzkat_schild,
+      vzkat.vzkat_richtung,
+      vzkat.vzkat_zeichen,
+      vzkat.vzkat_standort,
+      vzkat.vzkat_stvo,
+      vzkat.vzkat_zeichen_art,
+    ],
+    "vzkat_schild"
+  );
+
+const { nodes: layoutedSrzsaNodes, edges: layoutedSrzsaEdges } =
+  getLayoutedElements(srzsaNode, srzsaEdges);
+
+export const SRZSABuildDagre = () => {
+  const [nodes, setNodes] = useState(layoutedSrzsaNodes);
+  const [edges, setEdges] = useState(layoutedSrzsaEdges);
+  console.log("ccc edges", edges);
+  return (
+    <div
+      style={{
+        width: "1300px",
+        height: "650px",
+        backgroundColor: "white",
+        padding: "1rem",
+      }}
+    >
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        fitView
+        nodeTypes={{
+          rightPort: DetectPortAutomatiCids,
+          leftPort: DetectPortAutomatiCids,
         }}
       />
     </div>
